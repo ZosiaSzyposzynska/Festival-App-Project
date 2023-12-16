@@ -3,6 +3,12 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 
+router.get('/', (req, res) => {
+
+  res.json(db.testimonials);
+
+});
+
 
 router.get('/:id', (req, res) => {
   const testimonial = db.testimonials.find(item => item.id === parseInt(req.params.id));
