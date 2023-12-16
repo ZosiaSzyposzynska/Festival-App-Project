@@ -6,21 +6,33 @@ const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 const db = require('./db');
 const path = require('path');
-
-
+const socket = require('socket.io');
 app.use(cors());
+
+const server = app.listen(process.env.PORT || 8000, () => {
+  console.log('Server is running on port: 8000');
+});
+
+const io = socket(server);
+io.on('connection', (socket) => {
+  console.log('New Socket!');
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.use(express.static(path.join(__dirname, '/client/build')));
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+})
 
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/concerts', concertsRoutes);
 app.use('/api/seats', seatsRoutes);
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/client/build/index.html'));
+  res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
 
 app.get('/', (req, res) => {
@@ -31,6 +43,4 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Not found...' });
 });
 
-app.listen(process.env.PORT || 8000, () => {
-  console.log('Server is running on port: 8000');
-});
+
