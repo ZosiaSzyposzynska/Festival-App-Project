@@ -3,7 +3,11 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 
+router.get('/', (req, res) => {
 
+  res.json(db.concerts);
+
+});
 router.get('/:id', (req, res) => {
   const concert = db.concerts.find(item => item.id === parseInt(req.params.id));
 
