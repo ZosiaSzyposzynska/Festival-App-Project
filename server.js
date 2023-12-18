@@ -7,6 +7,7 @@ const seatsRoutes = require('./routes/seats.routes');
 const db = require('./db');
 const path = require('path');
 const socket = require('socket.io');
+const mongoose = require('mongoose');
 app.use(cors());
 
 const server = app.listen(process.env.PORT || 8000, () => {
@@ -30,6 +31,16 @@ app.use((req, res, next) => {
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/concerts', concertsRoutes);
 app.use('/api/seats', seatsRoutes);
+
+mongoose.connect('mongodb://0.0.0.0:27017/NewWaveDB', { useNewUrlParser: true });
+const newwave = mongoose.connection;
+
+newwave.once('open', () => {
+  console.log('Connected to the database');
+});
+newwave.on('error', err => console.log('Error ' + err));
+
+
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build/index.html'));
