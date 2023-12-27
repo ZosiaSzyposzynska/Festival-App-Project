@@ -32,7 +32,8 @@ app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/concerts', concertsRoutes);
 app.use('/api/seats', seatsRoutes);
 
-mongoose.connect('mongodb+srv://zosiaszyp:${process.env.DB_PASS}@cluster0.yqk7btz.mongodb.net/NewWaveDB?retryWrites=true&w=majority');
+mongoose.connect(`mongodb+srv://zosiaszyp:${process.env.DB_PASS}@cluster0.yqk7btz.mongodb.net/NewWaveDB?retryWrites=true&w=majority`);
+
 const newwave = mongoose.connection;
 
 newwave.once('open', () => {
