@@ -4,7 +4,6 @@ const cors = require('cors');
 const testimonialsRoutes = require('./routes/testimonials.routes');
 const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
-const db = require('./db');
 const path = require('path');
 const socket = require('socket.io');
 const mongoose = require('mongoose');
@@ -32,14 +31,18 @@ app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/concerts', concertsRoutes);
 app.use('/api/seats', seatsRoutes);
 console.log(process.env);
-mongoose.connect(`mongodb+srv://zosiaszyp:${process.env.DB_PASS}@cluster0.yqk7btz.mongodb.net/NewWaveDB?retryWrites=true&w=majority`);
 
-const newwave = mongoose.connection;
 
-newwave.once('open', () => {
-  console.log('Connected to the database');
-});
-newwave.on('error', err => console.log('Error ' + err));
+const NODE_ENV = process.env.NODE_ENV;
+let dbUri = '';
+
+if(NODE_ENV === 'production') dbUri = 'mongodb+srv://zosiaszyp:${process.env.DB_PASS}@cluster0.yqk7btz.mongodb.net/NewWaveDB?retryWrites=true&w=majority';
+else if(NODE_ENV === 'test') dbUri = 'mongodb://0.0.0.0:27017/NewWaveDBtest';
+else dbUri = 'mongodb://0.0.0.0:27017/NewWaveDB';
+
+mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+
 
 
 
@@ -55,4 +58,5 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Not found...' });
 });
 
+module.exports = server;
 

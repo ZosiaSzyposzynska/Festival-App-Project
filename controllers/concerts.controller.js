@@ -84,10 +84,72 @@ const deleteConcert = async (req, res) => {
   }
 };
 
+
+const getConcertsbyPerformer = async (req, res) => {
+
+  const { performer } = req.params;
+
+   try {
+    const concerts = await Concert.find({ performer });
+    res.json(concerts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+
+};
+
+const getConcertsbyGenre = async (req, res) => {
+
+  const { genre } = req.params;
+
+  try {
+    const concerts = await Concert.find({ genre });
+    res.json(concerts);
+
+  } catch(error){
+    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+
+};
+
+const getConcertsbyPriceRange = async (req, res) => {
+
+  const { price_min, price_max } = req.params;
+
+  try {
+
+    const concerts = await Concert.find({ price: { $gte: price_min, $lte: price_max } });
+    res.json(concerts);
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+const getConcertsByDay = async (req, res) => {
+  const { day } = req.params;
+
+  try {
+    const concerts = await Concert.find({ day });
+    res.json(concerts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
 module.exports = {
   getAllConcerts,
   getConcertById,
   addConcert,
   updateConcert,
   deleteConcert,
+  getConcertsbyPerformer,
+  getConcertsbyGenre,
+  getConcertsbyPriceRange,
+  getConcertsByDay
 };
