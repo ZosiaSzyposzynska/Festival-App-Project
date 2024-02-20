@@ -3,6 +3,7 @@
 const Seat = require('../models/seats.model');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
+const sanitize = require('mongo-sanitize');
 
 const getSeatsSummary = (day) => {
   const totalSeats = 50; // liczba wszystkich miejsc
@@ -44,6 +45,10 @@ const getSeatById = async (req, res) => {
 
 const addSeat = async (req, res, next) => {
   const { day, seat, client, email } = req.body;
+  const cleanDay = sanitize(day);
+  const cleanSeat = sanitize(seat);
+  const cleanClient = sanitize(client);
+  const cleanEmail = sanitize(email);
 
   try {
     const isSeatTaken = await Seat.exists({ seat: seat, day: day });
@@ -51,7 +56,7 @@ const addSeat = async (req, res, next) => {
     if (isSeatTaken) {
       res.status(409).json({ message: 'The slot is already taken...' });
     } else {
-      const newSeat = new Seat({ id: uuidv4(), day, seat, client, email });
+      const newSeat = new Seat({ id: uuidv4(), cleanDay, cleanSeat, cleanClient, cleanEmail});
       const savedSeat = await newSeat.save();
 
       req.io.emit('seatsUpdated', savedSeat);

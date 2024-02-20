@@ -6,7 +6,10 @@ const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 const path = require('path');
 const socket = require('socket.io');
+const helmet = require('helmet'); 
 const mongoose = require('mongoose');
+
+app.use(helmet());
 app.use(cors());
 
 const server = app.listen(process.env.PORT || 8000, () => {
