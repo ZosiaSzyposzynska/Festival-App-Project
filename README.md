@@ -12,6 +12,9 @@ Project is created with:
 * MongoDB
 * Mongoose
 * Nodemon
+## Install
+To run this project:
+npm install, npm install -g nodemon, npm run start
 
 
 
